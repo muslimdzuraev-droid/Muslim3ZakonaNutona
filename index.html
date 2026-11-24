@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Физика | Законы Ньютона</title>
+
+<style>
+:root {
+  --bg:#081426;
+  --panel:#11223a;
+  --panel2:#172b47;
+  --blue:#45b8ff;
+  --purple:#9b82ff;
+  --green:#53dfb0;
+  --text:#edf4ff;
+  --muted:#a5b6ce;
+  --border:rgba(255,255,255,.10);
+}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ font-family:Arial,sans-serif;
+ line-height:1.65;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+ position:sticky;top:0;z-index:10;
+ background:rgba(8,20,38,.94);
+ backdrop-filter:blur(15px);
+ border-bottom:1px solid var(--border);
+ padding:13px 5%;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:15px;
+}
+.logo{font-weight:bold;font-size:19px;color:var(--blue)}
+nav{display:flex;gap:17px;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-size:13px}
+nav a:hover{color:var(--blue)}
+.hero{
+ min-height:460px;padding:65px 8%;
+ display:grid;grid-template-columns:1.1fr .9fr;
+ align-items:center;gap:35px;
+ background:radial-gradient(circle at 80% 30%,#293b79 0%,transparent 45%),
+ linear-gradient(130deg,#101e3c,#081426);
+}
+.hero h1{font-size:clamp(35px,5vw,60px);line-height:1.12;margin:10px 0 20px}
+.hero h1 span{color:var(--blue)}
+.hero p{color:var(--muted);max-width:570px}
+.hero img{width:100%;max-height:340px;object-fit:contain;border-radius:20px}
+.tag{
+ color:var(--green);font-size:12px;letter-spacing:2px;
+ text-transform:uppercase;font-weight:bold
+}
+.btn{
+ display:inline-block;border:0;border-radius:10px;
+ background:linear-gradient(110deg,#299cf0,#7869ef);
+ color:white;padding:13px 22px;font-weight:bold;
+ text-decoration:none;margin-top:15px;
+}
+.btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
+.btn.secondary{background:#263c5a}
+.container{width:min(1100px,91%);margin:auto}
+section{padding:65px 0;border-bottom:1px solid var(--border)}
+.section-title{font-size:30px;margin:0 0 8px}
+.section-desc{color:var(--muted);margin-bottom:30px}
+.card{
+ background:var(--panel);border:1px solid var(--border);
+ border-radius:17px;padding:23px;margin-bottom:20px;
+}
+.card h3{margin-top:0;color:#8ed4ff}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.three{grid-template-columns:repeat(3,1fr)}
+.info{
+ background:#172c49;border-left:4px solid var(--blue);
+ padding:15px 18px;border-radius:8px;margin:18px 0;
+}
+.formula{
+ text-align:center;font-size:27px;color:var(--green);
+ font-weight:bold;padding:15px;background:#0b1a2e;
+ border-radius:12px;margin:15px 0;
+}
+.picture{
+ width:100%;height:190px;object-fit:cover;
+ border-radius:12px;margin-bottom:12px;
+}
+ul{padding-left:23px}
+li{margin:7px 0}
+.muted{color:var(--muted)}
+.model{
+ background:#09172a;border:1px solid #2c4264;
+ border-radius:14px;padding:15px;overflow:hidden;
+}
+canvas{width:100%;display:block;border-radius:10px}
+.controls{display:flex;flex-wrap:wrap;gap:15px;margin-top:17px}
+.control{
+ flex:1;min-width:180px;background:var(--panel2);
+ padding:13px;border-radius:10px;
+}
+.control label{display:block;color:var(--muted);font-size:13px}
+input[type=range]{width:100%;accent-color:var(--blue)}
+input[type=number]{
+ width:100%;padding:12px;background:#09172a;
+ color:white;border:1px solid #405675;border-radius:8px;
+}
+.result{
+ color:var(--green);font-size:22px;font-weight:bold;
+ margin-top:10px;
+}
+.answer{
+ background:#0b1a2e;padding:14px;border-radius:10px;
+ margin-top:12px;
+}
+.question{padding:18px 0;border-bottom:1px solid var(--border)}
+.question label{display:block;margin:9px 0;color:#d8e5f7}
+.question input{accent-color:var(--blue)}
+.feedback{margin-top:10px;font-size:14px}
+.good{color:var(--green)}
+.bad{color:#ff8585}
+.task{margin-bottom:23px}
+.task input{margin-top:10px;max-width:300px}
+footer{text-align:center;padding:35px;color:var(--muted)}
+@media(max-width:750px){
+ .hero{grid-template-columns:1fr;padding:45px 6%}
+ .hero img{max-height:240px}
+ .grid,.three{grid-template-columns:1fr}
+ nav{gap:9px}
+ nav a{font-size:11px}
+ header{padding:12px 4%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">⚛ PHYSICS LAB</div>
+ <nav>
+  <a href="#intro">Введение</a>
+  <a href="#law1">Закон I</a>
+  <a href="#law2">Закон II</a>
+  <a href="#law3">Закон III</a>
+  <a href="#practice">Практика</a>
+  <a href="#test">Тест</a>
+ </nav>
+</header>
+
+<!-- ГЛАВНЫЙ ЭКРАН -->
+
+<div class="hero">
+ <div>
+  <div class="tag">Интерактивный урок физики · 7 класс</div>
+  <h1>Законы <span>Ньютона</span></h1>
+  <p>
+   Почему движутся тела? Что заставляет предметы ускоряться?
+   Почему ракеты летят в космос? Изучим три закона,
+   которые объясняют движение окружающего мира.
+  </p>
+  <a class="btn" href="#intro">Начать обучение →</a>
+ </div>
+ <div>
+  <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=900"
+       alt="Научная физическая иллюстрация">
+ </div>
+</div>
+
+<main class="container">
+
+<!-- ВВЕДЕНИЕ -->
+
+<section id="intro">
+ <div class="tag">Раздел 01</div>
+ <h2 class="section-title">Кто такой Исаак Ньютон?</h2>
+ <p class="section-desc">Человек, который помог объяснить законы движения Вселенной.</p>
+
+ <div class="grid">
+  <div class="card">
+   <img class="picture"
+    src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/GodfreyKneller-IsaacNewton-1689.jpg/500px-GodfreyKneller-IsaacNewton-1689.jpg"
+    alt="Портрет Исаака Ньютона">
+   <h3>Исаак Ньютон</h3>
+   <p>
+    Исаак Ньютон — английский физик, математик и астроном.
+    Родился в 1643 году. Он стал одним из основателей
+    классической физики.
+   </p>
+   <p>
+    Ньютон изучал движение тел, силы, свет и гравитацию.
+    Его работы изменили представление людей о природе.
+   </p>
+  </div>
+
+  <div class="card">
+   <h3>Главные достижения</h3>
+   <ul>
+    <li>Сформулировал три закона механики.</li>
+    <li>Открыл закон всемирного тяготения.</li>
+    <li>Исследовал природу белого света.</li>
+    <li>Создал отражательный телескоп.</li>
+    <li>Развивал математические методы исследования.</li>
+   </ul>
+   <div class="info">
+    <b>Интересный факт:</b>
+    Ньютон изучал падение предметов и задавался вопросом,
+    почему тела притягиваются к Земле.
+   </div>
+  </div>
+ </div>
+
+ <h3>Что изучает механика?</h3>
+ <p>
+  Механика — раздел физики, изучающий движение тел,
+  причины изменения движения и взаимодействие предметов.
+ </p>
+
+ <div class="grid three">
+  <div class="card">
+   <h3>Тело</h3>
+   Любой предмет, который мы изучаем: мяч, машина, книга.
+  </div>
+  <div class="card">
+   <h3>Сила</h3>
+   Воздействие одного тела на другое. Обозначается F.
+  </div>
+  <div class="card">
+   <h3>Масса</h3>
+   Характеристика инертности тела. Обозначается m.
+  </div>
+ </div>
+
+ <div class="formula">F — сила (Н) · m — масса (кг) · a — ускорение (м/с²)</div>
+</section>
+
+<!-- ПЕРВЫЙ ЗАКОН -->
+
+<section id="law1">
+ <div class="tag">Раздел 02</div>
+ <h2 class="section-title">Первый закон Ньютона</h2>
+ <p class="section-desc">Закон инерции.</p>
+
+ <img class="picture"
+ style="height:250px"
+ src="https://images.unsplash.com/photo-1511882150382-421056c89033?w=1100"
+ alt="Спортивный мяч">
+
+ <div class="card">
+  <h3>Формулировка закона</h3>
+  Если на тело не действуют силы или их действие
+  уравновешено, тело сохраняет состояние покоя
+  или равномерного прямолинейного движения.
+  <div class="info">
+   Простыми словами: тело не меняет своё движение само по себе.
+   Чтобы изменить скорость или направление движения,
+   необходимо воздействие нескомпенсированной силы.
+  </div>
+ </div>
+
+ <div class="grid">
+  <div class="card">
+   <h3>Что такое инерция?</h3>
+   Инерция — свойство тела сохранять состояние покоя
+   или равномерного прямолинейного движения.
+  </div>
+  <div class="card">
+   <h3>Пример из жизни</h3>
+   Когда автобус резко тормозит, пассажиров наклоняет вперёд.
+   Их тела стремятся сохранить прежнее движение.
+  </div>
+ </div>
+
+ <h3>🔬 Интерактивная лаборатория №1</h3>
+ <p class="muted">
+  Управляй движением тележки. Измени скорость и трение.
+  Посмотри, как меняется движение.
+ </p>
+
+ <div class="model">
+  <canvas id="model1" width="800" height="270"></canvas>
+  <div class="controls">
+   <div class="control">
+    <label>Начальная скорость: <b id="v1">5</b> м/с</label>
+    <input type="range" id="speed1" min="0" max="10" value="5">
+   </div>
+   <div class="control">
+    <label>Сила трения: <b id="fr1">0</b></label>
+    <input type="range" id="friction1" min="0" max="5" value="0">
+   </div>
+  </div>
+  <div class="controls">
+   <button class="btn" onclick="start1()">▶ Запустить</button>
+   <button class="btn secondary" onclick="stop1()">⏸ Остановить</button>
+   <button class="btn secondary" onclick="reset1()">↻ Сбросить</button>
+  </div>
+  <div class="answer" id="info1">
+   Выбери параметры и запусти тележку.
+  </div>
+ </div>
+
+ <div class="info">
+  <b>Вывод:</b> если сопротивление отсутствует,
+  тележка продолжает двигаться с постоянной скоростью.
+  Если есть трение, она постепенно замедляется.
+ </div>
+</section>
+
+<!-- ВТОРОЙ ЗАКОН -->
+
+<section id="law2">
+ <div class="tag">Раздел 03</div>
+ <h2 class="section-title">Второй закон Ньютона</h2>
+ <p class="section-desc">Закон силы и ускорения.</p>
+
+ <div class="card">
+  <h3>Формулировка закона</h3>
+  Ускорение тела прямо пропорционально равнодействующей
+  силе и обратно пропорционально массе тела.
+  <div class="formula">F = m · a</div>
+  <ul>
+   <li>F — сила, измеряется в ньютонах (Н).</li>
+   <li>m — масса, измеряется в килограммах (кг).</li>
+   <li>a — ускорение, измеряется в м/с².</li>
+  </ul>
+ </div>
+
+ <div class="grid">
+  <div class="card">
+   <h3>Если увеличить силу</h3>
+   При неизменной массе ускорение увеличивается.
+  </div>
+  <div class="card">
+   <h3>Если увеличить массу</h3>
+   При одинаковой силе ускорение уменьшается.
+  </div>
+ </div>
+
+ <h3>🔬 Интерактивная лаборатория №2</h3>
+ <p class="muted">
+  Меняй массу и силу. Сайт автоматически рассчитает ускорение.
+ </p>
+
+ <div class="model">
+  <canvas id="model2" width="800" height="270"></canvas>
+  <div class="controls">
+   <div class="control">
+    <label>Масса: <b id="massVal">5</b> кг</label>
+    <input type="range" id="mass" min="1" max="30" value="5">
+   </div>
+   <div class="control">
+    <label>Сила: <b id="forceVal">20</b> Н</label>
+    <input type="range" id="force" min="0" max="100" value="20">
+   </div>
+  </div>
+  <div class="answer">
+   <div>Ускорение тела:</div>
+   <div class="result" id="acceleration">4 м/с²</div>
+   <div class="muted" id="explain2"></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>Пример решения задачи</h3>
+  На тело массой 3 кг действует сила 12 Н.
+  Найди ускорение.
+
+  <div class="answer">
+   <b>Дано:</b><br>
+   m = 3 кг<br>
+   F = 12 Н<br>
+   a = ?
+   <hr>
+   <b>Решение:</b><br>
+   a = F / m<br>
+   a = 12 / 3 = 4 м/с²
+   <div class="result">Ответ: 4 м/с²</div>
+  </div>
+ </div>
+</section>
+
+<!-- ТРЕТИЙ ЗАКОН -->
+
+<section id="law3">
+ <div class="tag">Раздел 04</div>
+ <h2 class="section-title">Третий закон Ньютона</h2>
+ <p class="section-desc">Закон действия и противодействия.</p>
+
+ <div class="card">
+  <h3>Формулировка закона</h3>
+  Силы, с которыми два тела действуют друг на друга,
+  равны по модулю и противоположны по направлению.
+  <div class="formula">F₁₂ = −F₂₁</div>
+  <div class="info">
+   Простыми словами: если одно тело толкает другое,
+   второе тело одновременно действует на первое
+   с такой же по величине силой в противоположном направлении.
+  </div>
+ </div>
+
+ <div class="grid three">
+  <div class="card">
+   <img class="picture" src="https://images.unsplash.com/photo-1530549387789-4c1017266635?w=500" alt="Плавание">
+   <h3>Плавание</h3>
+   Пловец отталкивает воду назад и движется вперёд.
+  </div>
+  <div class="card">
+   <img class="picture" src="https://images.unsplash.com/photo-1517976487492-5750f3195933?w=500" alt="Ракета">
+   <h3>Ракета</h3>
+   Газы выбрасываются назад, а ракета движется вперёд.
+  </div>
+  <div class="card">
+   <img class="picture" src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=500" alt="Спорт">
+   <h3>Толчок</h3>
+   При взаимодействии два тела действуют друг на друга.
+  </div>
+ </div>
+
+ <h3>🔬 Интерактивная лаборатория №3</h3>
+ <p class="muted">
+  Измени силу взаимодействия и посмотри,
+  как два тела действуют друг на друга.
+ </p>
+
+ <div class="model">
+  <canvas id="model3" width="800" height="280"></canvas>
+  <div class="controls">
+   <div class="control">
+    <label>Сила взаимодействия: <b id="force3val">30</b> Н</label>
+    <input type="range" id="force3" min="5" max="100" value="30">
+   </div>
+  </div>
+  <div class="answer" id="info3">
+   Силы равны по величине и направлены противоположно.
+  </div>
+ </div>
+
+ <div class="info">
+  Важно: силы действия и противодействия приложены
+  к разным телам. Поэтому они не уничтожают друг друга.
+ </div>
+</section>
+
+<!-- СРАВНЕНИЕ -->
+
+<section id="summary">
+ <div class="tag">Раздел 05</div>
+ <h2 class="section-title">Сравним три закона</h2>
+
+ <div class="card">
+  <div class="grid three">
+   <div>
+    <h3>Закон I</h3>
+    <b>Инерция</b>
+    <p class="muted">Тело сохраняет своё движение.</p>
+   </div>
+   <div>
+    <h3>Закон II</h3>
+    <b>Ускорение</b>
+    <p class="muted">Сила и масса определяют ускорение.</p>
+   </div>
+   <div>
+    <h3>Закон III</h3>
+    <b>Взаимодействие</b>
+    <p class="muted">Действие равно противодействию.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ПРАКТИКА -->
+
+<section id="practice">
+ <div class="tag">Раздел 06</div>
+ <h2 class="section-title">Практическая работа</h2>
+ <p class="section-desc">
+  Реши задачи самостоятельно. Вводи числовой ответ,
+  а сайт проверит результат.
+ </p>
+
+ <div class="card task">
+  <h3>Задача №1. Второй закон Ньютона</h3>
+  На тело массой 4 кг действует сила 20 Н.
+  Найди ускорение тела.
+  <div class="muted">Ответ укажи в м/с².</div>
+  <input type="number" id="task1" placeholder="Твой ответ">
+  <button class="btn" onclick="checkTask(1,5)">Проверить</button>
+  <div class="feedback" id="feedback1"></div>
+  <button class="btn secondary" onclick="showSolution(1)">Показать решение</button>
+  <div class="feedback" id="solution1"></div>
+ </div>
+
+ <div class="card task">
+  <h3>Задача №2. Найди силу</h3>
+  Масса тела равна 6 кг, а ускорение составляет
+  3 м/с². Найди силу, действующую на тело.
+  <div class="muted">Ответ укажи в ньютонах.</div>
+  <input type="number" id="task2" placeholder="Твой ответ">
+  <button class="btn" onclick="checkTask(2,18)">Проверить</button>
+  <div class="feedback" id="feedback2"></div>
+  <button class="btn secondary" onclick="showSolution(2)">Показать решение</button>
+  <div class="feedback" id="solution2"></div>
+ </div>
+
+ <div class="card task">
+  <h3>Задача №3. Найди массу</h3>
+  На тело действует сила 18 Н.
+  Ускорение тела равно 2 м/с².
+  Найди массу тела.
+  <div class="muted">Ответ укажи в килограммах.</div>
+  <input type="number" id="task3" placeholder="Твой ответ">
+  <button class="btn" onclick="checkTask(3,9)">Проверить</button>
+  <div class="feedback" id="feedback3"></div>
+  <button class="btn secondary" onclick="showSolution(3)">Показать решение</button>
+  <div class="feedback" id="solution3"></div>
+ </div>
+
+ <div class="card task">
+  <h3>Задача №4. Увеличение силы</h3>
+  На тело массой 5 кг сначала действует сила 10 Н,
+  затем силу увеличили до 20 Н.
+  Найди новое ускорение.
+  <div class="muted">Ответ укажи в м/с².</div>
+  <input type="number" id="task4" placeholder="Твой ответ">
+  <button class="btn" onclick="checkTask(4,4)">Проверить</button>
+  <div class="feedback" id="feedback4"></div>
+  <button class="btn secondary" onclick="showSolution(4)">Показать решение</button>
+  <div class="feedback" id="solution4"></div>
+ </div>
+
+ <div class="card task">
+  <h3>Задача №5. Сравнение ускорений</h3>
+  На два тела действуют одинаковые силы 24 Н.
+  Масса первого тела 3 кг, второго — 6 кг.
+  Найди ускорение второго тела.
+  <div class="muted">Ответ укажи в м/с².</div>
+  <input type="number" id="task5" placeholder="Твой ответ">
+  <button class="btn" onclick="checkTask(5,4)">Проверить</button>
+  <div class="feedback" id="feedback5"></div>
+  <button class="btn secondary" onclick="showSolution(5)">Показать решение</button>
+  <div class="feedback" id="solution5"></div>
+ </div>
+</section>
+
+<!-- ТЕСТ -->
+
+<section id="test">
+ <div class="tag">Раздел 07</div>
+ <h2 class="section-title">Итоговый тест</h2>
+ <p class="section-desc">
+  Проверь знания по всем трём законам Ньютона.
+  В тесте 10 вопросов.
+ </p>
+
+ <div class="card">
+  <div id="quiz"></div>
+  <button class="btn" onclick="checkQuiz()">Завершить тест</button>
+  <button class="btn secondary" onclick="resetQuiz()">Пройти заново</button>
+  <div class="answer" id="quizResult" style="display:none"></div>
+ </div>
+</section>
+
+<section id="conclusion">
+ <div class="tag">Завершение урока</div>
+ <h2 class="section-title">Что мы узнали?</h2>
+ <div class="card">
+  <ul>
+   <li>Исаак Ньютон — один из основателей классической физики.</li>
+   <li>Первый закон объясняет явление инерции.</li>
+   <li>Второй закон связывает силу, массу и ускорение.</li>
+   <li>Третий закон объясняет взаимодействие двух тел.</li>
+   <li>Сила измеряется в ньютонах, масса — в килограммах.</li>
+  </ul>
+  <div class="formula">F = m · a</div>
+  <h3 style="text-align:center">Поздравляем с завершением урока!</h3>
+ </div>
+</section>
+
+</main>
+
+<footer>
+ PHYSICS LAB · Интерактивный урок физики · 7 класс
+ <br>Тема: Исаак Ньютон и три закона движения
+</footer>
+
+<script>
+
+// ===========================
+// ПЕРВЫЙ ЗАКОН
+// ===========================
+
+const c1=document.getElementById('model1');
+const x1=c1.getContext('2d');
+
+let pos1=60;
+let velocity1=0;
+let running1=false;
+let frictionValue=0;
+let lastTime=0;
+let animation1=null;
+
+function draw1(){
+ x1.clearRect(0,0,800,270);
+
+ x1.fillStyle='#142a45';
+ x1.fillRect(0,190,800,80);
+
+ x1.fillStyle='#53708d';
+ x1.fillRect(0,190,800,5);
+
+ x1.fillStyle='#45b8ff';
+ x1.fillRect(pos1,145,90,45);
+
+ x1.fillStyle='#d8edff';
+ x1.beginPath();
+ x1.arc(pos1+20,195,12,0,Math.PI*2);
+ x1.arc(pos1+70,195,12,0,Math.PI*2);
+ x1.fill();
+
+ x1.fillStyle='white';
+ x1.font='16px Arial';
+ x1.fillText('Тележка',pos1+10,174);
+
+ x1.fillStyle='#9b82ff';
+ x1.font='15px Arial';
+ x1.fillText('Движение →',30,35);
+}
+
+function animate1(time){
+ if(!running1)return;
+
+ const dt=lastTime?Math.min((time-lastTime)/16,3):1;
+ lastTime=time;
+
+ pos1+=velocity1*dt*2.5;
+
+ if(frictionValue>0){
+  velocity1=Math.max(0,velocity1-frictionValue*.012*dt);
+ }
+
+ if(pos1>710)pos1=20;
+
+ draw1();
+
+ document.getElementById('info1').innerText=
+ 'Текущая скорость: '+velocity1.toFixed(2)+' м/с. '+
+ (frictionValue===0?'Трение отсутствует — скорость сохраняется.':
+ 'Трение замедляет тележку.');
+
+ animation1=requestAnimationFrame(animate1);
+}
+
+function start1(){
+ if(running1)return;
+ velocity1=Number(document.getElementById('speed1').value);
+ frictionValue=Number(document.getElementById('friction1').value);
+ running1=true;
+ lastTime=0;
+ animation1=requestAnimationFrame(animate1);
+}
+
+function stop1(){
+ running1=false;
+ cancelAnimationFrame(animation1);
+ document.getElementById('info1').innerText='Движение приостановлено.';
+}
+
+function reset1(){
+ stop1();
+ pos1=60;
+ velocity1=0;
+ draw1();
+ document.getElementById('info1').innerText='Модель сброшена.';
+}
+
+document.getElementById('speed1').oninput=e=>{
+ document.getElementById('v1').innerText=e.target.value;
+};
+document.getElementById('friction1').oninput=e=>{
+ document.getElementById('fr1').innerText=e.target.value;
+};
+
+draw1();
+
+// ===========================
+// ВТОРОЙ ЗАКОН
+// ===========================
+
+const c2=document.getElementById('model2');
+const x2=c2.getContext('2d');
+
+function update2(){
+ const m=Number(document.getElementById('mass').value);
+ const f=Number(document.getElementById('force').value);
+ const a=f/m;
+
+ document.getElementById('massVal').innerText=m;
+ document.getElementById('forceVal').innerText=f;
+ document.getElementById('acceleration').innerText=a.toFixed(2)+' м/с²';
+
+ document.getElementById('explain2').innerText=
+ 'a = F / m = '+f+' / '+m+' = '+a.toFixed(2)+' м/с²';
+
+ x2.clearRect(0,0,800,270);
+
+ x2.fillStyle='#142a45';
+ x2.fillRect(0,195,800,70);
+
+ const width=70+Math.min(m*5,150);
+
+ x2.fillStyle='#45b8ff';
+ x2.fillRect(280-width/2,130,width,65);
+
+ x2.fillStyle='white';
+ x2.font='17px Arial';
+ x2.textAlign='center';
+ x2.fillText(m+' кг',280,168);
+
+ x2.strokeStyle='#53dfb0';
+ x2.lineWidth=5;
+ x2.beginPath();
+ x2.moveTo(280+width/2+10,155);
+ x2.lineTo(280+width/2+Math.min(f*2,180),155);
+ x2.stroke();
+
+ x2.fillStyle='#53dfb0';
+ x2.font='18px Arial';
+ x2.fillText('Сила: '+f+' Н',550,110);
+
+ x2.fillStyle='#9b82ff';
+ x2.fillText('Ускорение: '+a.toFixed(2)+' м/с²',400,45);
+
+ x2.textAlign='left';
+}
+
+document.getElementById('mass').oninput=update2;
+document.getElementById('force').oninput=update2;
+update2();
+
+// ===========================
+// ТРЕТИЙ ЗАКОН
+// ===========================
+
+const c3=document.getElementById('model3');
+const x3=c3.getContext('2d');
+
+function update3(){
+ const f=Number(document.getElementById('force3').value);
+ document.getElementById('force3val').innerText=f;
+
+ x3.clearRect(0,0,800,280);
+
+ x3.fillStyle='#45b8ff';
+ x3.fillRect(105,110,190,90);
+
+ x3.fillStyle='#9b82ff';
+ x3.fillRect(505,110,190,90);
+
+ x3.fillStyle='white';
+ x3.font='18px Arial';
+ x3.textAlign='center';
+ x3.fillText('Тело A',200,160);
+ x3.fillText('Тело B',600,160);
+
+ x3.strokeStyle='#53dfb0';
+ x3.lineWidth=6;
+
+ // Стрелка силы первого тела
+ x3.beginPath();
+ x3.moveTo(300,135);
+ x3.lineTo(480,135);
+ x3.stroke();
+
+ x3.beginPath();
+ x3.moveTo(480,135);
+ x3.lineTo(460,123);
+ x3.lineTo(460,147);
+ x3.closePath();
+ x3.fillStyle='#53dfb0';
+ x3.fill();
+
+ // Стрелка силы второго тела
+ x3.beginPath();
+ x3.moveTo(500,175);
+ x3.lineTo(320,175);
+ x3.stroke();
+
+ x3.beginPath();
+ x3.moveTo(320,175);
+ x3.lineTo(340,163);
+ x3.lineTo(340,187);
+ x3.closePath();
+ x3.fill();
+
+ x3.fillStyle='white';
+ x3.font='16px Arial';
+ x3.fillText(f+' Н',390,115);
+ x3.fillText(f+' Н',410,215);
+
+ x3.textAlign='left';
+
+ document.getElementById('info3').innerText=
+ 'Тело A действует на тело B с силой '+f+
+ ' Н. Тело B действует на тело A с силой '+f+
+ ' Н в противоположном направлении.';
+}
+
+document.getElementById('force3').oninput=update3;
+update3();
+
+// ===========================
+// ПРАКТИЧЕСКИЕ ЗАДАЧИ
+// ===========================
+
+const solutions={
+ 1:'a = F / m = 20 / 4 = 5 м/с².',
+ 2:'F = m · a = 6 · 3 = 18 Н.',
+ 3:'m = F / a = 18 / 2 = 9 кг.',
+ 4:'a = F / m = 20 / 5 = 4 м/с².',
+ 5:'a = F / m = 24 / 6 = 4 м/с².'
+};
+
+function checkTask(n,correct){
+ const value=document.getElementById('task'+n).value;
+ const feedback=document.getElementById('feedback'+n);
+
+ if(value.trim()===''){
+  feedback.innerHTML='<span class="bad">Сначала введи ответ.</span>';
+  return;
+ }
+
+ if(Math.abs(Number(value)-correct)<0.0001){
+  feedback.innerHTML='<span class="good">✓ Правильно! Отличная работа.</span>';
+ }else{
+  feedback.innerHTML='<span class="bad">✗ Пока неверно. Попробуй ещё раз.</span>';
+ }
+}
+
+function showSolution(n){
+ document.getElementById('solution'+n).innerHTML=
+ '<div class="answer"><b>Решение:</b><br>'+
+ solutions[n]+'</div>';
+}
+
+// ===========================
+// ИТОГОВЫЙ ТЕСТ
+// ===========================
+
+const questions=[
+ {
+  q:'Кто сформулировал три основных закона механики?',
+  a:['Альберт Эйнштейн','Исаак Ньютон','Галилео Галилей','Никола Тесла'],
+  c:1
+ },
+ {
+  q:'Как называется свойство тела сохранять состояние покоя или движения?',
+  a:['Инерция','Плотность','Температура','Давление'],
+  c:0
+ },
+ {
+  q:'Как обозначается сила в физике?',
+  a:['m','a','F','v'],
+  c:2
+ },
+ {
+  q:'В каких единицах измеряется сила?',
+  a:['Килограммы','Метры','Ньютоны','Секунды'],
+  c:2
+ },
+ {
+  q:'Какая формула соответствует второму закону Ньютона?',
+  a:['F = m · a','S = v · t','P = m · g','v = S / t'],
+  c:0
+ },
+ {
+  q:'Что произойдёт с ускорением, если увеличить силу при неизменной массе?',
+  a:['Ускорение уменьшится','Ускорение увеличится','Масса уменьшится','Тело обязательно остановится'],
+  c:1
+ },
+ {
+  q:'Что произойдёт с ускорением, если увеличить массу при неизменной силе?',
+  a:['Ускорение увеличится','Ускорение не изменится','Ускорение уменьшится','Сила исчезнет'],
+  c:2
+ },
+ {
+  q:'Какой закон объясняет движение ракеты за счёт выброса газов?',
+  a:['Первый закон','Второй закон','Третий закон','Закон всемирного тяготения'],
+  c:2
+ },
+ {
+  q:'Силы действия и противодействия...',
+  a:[
+   'Всегда направлены одинаково',
+   'Равны по величине и противоположны',
+   'Всегда действуют на одно тело',
+   'Не связаны друг с другом'
+  ],
+  c:1
+ },
+ {
+  q:'На тело массой 2 кг действует сила 10 Н. Чему равно ускорение?',
+  a:['2 м/с²','5 м/с²','10 м/с²','20 м/с²'],
+  c:1
+ }
+];
+
+const quiz=document.getElementById('quiz');
+
+function renderQuiz(){
+ quiz.innerHTML='';
+ questions.forEach((q,i)=>{
+  const div=document.createElement('div');
+  div.className='question';
+
+  const title=document.createElement('b');
+  title.textContent=(i+1)+'. '+q.q;
+  div.appendChild(title);
+
+  q.a.forEach((answer,j)=>{
+   const label=document.createElement('label');
+   const input=document.createElement('input');
+   input.type='radio';
+   input.name='q'+i;
+   input.value=j;
+   label.appendChild(input);
+   label.appendChild(document.createTextNode(' '+answer));
+   div.appendChild(label);
+  });
+
+  quiz.appendChild(div);
+ });
+}
+
+function checkQuiz(){
+ let score=0;
+ let unanswered=0;
+
+ questions.forEach((q,i)=>{
+  const selected=document.querySelector('input[name="q'+i+'"]:checked');
+  if(!selected){
+   unanswered++;
+  }else if(Number(selected.value)===q.c){
+   score++;
+  }
+ });
+
+ if(unanswered>0){
+  alert('Ответь на все вопросы. Осталось: '+unanswered);
+  return;
+ }
+
+ const result=document.getElementById('quizResult');
+ result.style.display='block';
+
+ let message='';
+ if(score>=9)message='Превосходно! Ты отлично знаешь законы Ньютона!';
+ else if(score>=7)message='Хороший результат! Осталось немного повторить.';
+ else if(score>=5)message='Неплохо! Повтори материал и попробуй ещё раз.';
+ else message='Стоит ещё раз внимательно изучить урок.';
+
+ result.innerHTML=
+ '<h2>Твой результат: '+score+' / 10</h2>'+
+ '<div class="result">'+(score*10)+'%</div>'+
+ '<p>'+message+'</p>';
+
+ document.querySelectorAll('#quiz input').forEach(input=>{
+  input.disabled=true;
+ });
+
+ result.scrollIntoView({behavior:'smooth'});
+}
+
+function resetQuiz(){
+ renderQuiz();
+ const result=document.getElementById('quizResult');
+ result.style.display='none';
+}
+
+renderQuiz();
+
+</script>
+
+</body>
+</html>
